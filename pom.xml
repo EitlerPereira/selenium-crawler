@@ -8,8 +8,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>tumblr-crawler</name>
-	<description>tumblr crawler</description>
+	<name>selenium-crawler</name>
+	<description>selenium crawler</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
