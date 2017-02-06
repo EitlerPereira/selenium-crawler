@@ -1,10 +1,11 @@
 package com.toad.config
 
 
-import org.apache.commons.pool2.PooledObjectFactory
-import org.apache.commons.pool2.impl.GenericObjectPool
 import org.openqa.selenium.WebDriver
-import org.springframework.beans.factory.annotation.Autowired
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeOptions
+import org.openqa.selenium.remote.DesiredCapabilities
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -17,19 +18,30 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class ChromeDriverConfig {
 
-    @Autowired
-    private lateinit var chromeDriverFactory: PooledObjectFactory<WebDriver>
+    @Value("\${selenium.driver.name}")
+    private lateinit var driverName : String
 
+    @Value("\${selenium.driver.path}")
+    private lateinit var driverPath: String
+
+    @Value("\${selenium.driver.download-path}")
+    lateinit var downloadPath:String
 
     @Bean
-    open fun chromeDriverPool(): GenericObjectPool<WebDriver> {
-        val pool = GenericObjectPool(chromeDriverFactory)
-        pool.maxTotal = 2
-        pool.lifo = false
-        pool.blockWhenExhausted = true
-        pool.maxWaitMillis = 3000
+    open fun webDriver(): WebDriver {
+        System.getProperties().setProperty(driverName, driverPath)
+        val options = ChromeOptions()
+        options.setExperimentalOption("prefs", mapOf(
+                "profile.default_content_settings.popups" to "0",
+                "download.default_directory" to downloadPath,
+                "download.prompt_for_download" to false.toString(),
+                "download.directory_upgrade" to true.toString(),
+                "safebrowsing.enabled" to true.toString()
+        ))
+        val cap = DesiredCapabilities.chrome()
+        cap.setCapability(ChromeOptions.CAPABILITY, options)
 
-        return  pool
+        return ChromeDriver(cap)
     }
 
 
