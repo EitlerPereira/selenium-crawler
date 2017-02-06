@@ -1,5 +1,6 @@
 package com.toad
 
+import com.toad.crawler.MyGameResourceCrawler
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.openqa.selenium.By
@@ -16,25 +17,15 @@ class TumblrCrawlerApplicationTests {
     @Autowired
     private lateinit var driver: WebDriver
 
+    @Autowired
+    private lateinit var crawler: MyGameResourceCrawler
+
     @Test
     fun contextLoads() {
     }
 
     @Test
-    fun testWebDriver() {
-        driver.get("http://www.2gei.com/view/153.html")
-        val startTime = System.currentTimeMillis()
-        println(startTime)
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS)
-        val endTime = System.currentTimeMillis()
-        println(endTime)
-        println("等待页面耗时：${endTime - startTime} 毫秒")
-        driver.findElements(By.cssSelector("span.item-info-bottom-down")).forEach {
-            println(it.text)
-            it.click()
-            Thread.sleep(3000)
-
-        }
-
+    fun testResourceCrawler() {
+        crawler.crawl()
     }
 }
