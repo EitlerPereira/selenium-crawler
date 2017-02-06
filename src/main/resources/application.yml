@@ -1,0 +1,6 @@
+# chrome web driver config
+selenium:
+  driver:
+    name: webdriver.chrome.driver
+    path: src/main/resources/chromedriver/chromedriver.exe
+    download-path: E:/chromedownloads/

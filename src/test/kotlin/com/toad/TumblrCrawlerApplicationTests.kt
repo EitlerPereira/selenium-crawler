@@ -1,6 +1,5 @@
 package com.toad
 
-import org.apache.commons.pool2.impl.GenericObjectPool
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.openqa.selenium.By
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit
 class TumblrCrawlerApplicationTests {
 
     @Autowired
-    private lateinit var driverPool: GenericObjectPool<WebDriver>
+    private lateinit var driver: WebDriver
 
     @Test
     fun contextLoads() {
@@ -23,7 +22,6 @@ class TumblrCrawlerApplicationTests {
 
     @Test
     fun testWebDriver() {
-        val driver = driverPool.borrowObject()
         driver.get("http://www.2gei.com/view/153.html")
         val startTime = System.currentTimeMillis()
         println(startTime)
@@ -37,7 +35,6 @@ class TumblrCrawlerApplicationTests {
             Thread.sleep(3000)
 
         }
-        driverPool.returnObject(driver)
 
     }
 }
