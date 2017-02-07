@@ -21,36 +21,67 @@ import java.util.concurrent.TimeUnit
  */
 @Component
 open class MyGameResourceCrawler(@Autowired val webDriver: WebDriver) {
+    val kingOfDragonUrl = "http://www.2gei.com/view/56099.html" // 龙王url
+    val caoCaoZhuanUrl = "http://www.2gei.com/view/153.html" // 曹操传url
+    val mainPage = "http://www.2gei.com/"
+    val executor: ExecutorService = Executors.newFixedThreadPool(10)
 
+    open fun login(): Boolean {
+        webDriver.get(mainPage)
+        if (!SeleniumUtil.waitForAjaxToLoad(wait, webDriver)) {
+            return false
+        }
+        val loginBtn = webDriver.findElement(By.id("loginBtn"))
+        val mainWindow = webDriver.windowHandle
+
+        Actions(webDriver).moveToElement(loginBtn).click().perform()
+
+        webDriver.windowHandles
+                .filter { it != mainWindow }
+                .first()
+                .let {
+                    webDriver.switchTo().window(it)
+                    println("title: ${webDriver.title}")
+                    if (SeleniumUtil.waitForAjaxToLoad(wait, webDriver)) {
+                        val qqPortrait = webDriver.switchTo().frame("ptlogin_iframe").findElement(By.xpath("//*[@id='nick_243634401']"))
+                        Actions(webDriver).moveToElement(qqPortrait).click().perform()
+                        webDriver.switchTo().window(mainWindow)
+                        return true
+                    }
+                    return false
+                }
+
+    }
+
+    private val wait: WebDriverWait by lazy {
+        val wait = WebDriverWait(webDriver, 10L)
+        wait
+    }
 
     open fun crawl() {
-        webDriver.get("http://www.2gei.com/view/153.html")
-        webDriver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS)
-        val executor = Executors.newFixedThreadPool(10)
-
-        val wait = WebDriverWait(webDriver, 10L)
+        webDriver.get(kingOfDragonUrl)
 
         while (SeleniumUtil.waitForAjaxToLoad(wait, webDriver) && webDriver.findElements(By.linkText("下一页")).isNotEmpty()) {
             val currentHandle = webDriver.windowHandle
             println("main window: $currentHandle")
 
-            crawlPage(currentHandle, executor, wait)
+            crawlPage(executor, wait)
 
             webDriver.findElements(By.linkText("下一页"))
                     .first()
                     .let {
-                        dismissOtherWindow(currentHandle)
+//                        dismissOtherWindow(currentHandle)
                         Actions(webDriver).moveToElement(it).click().perform()
                         Thread.sleep(1500)
                     }
         }
+
+        crawlPage(executor, wait) // crawl last page
     }
 
-    private fun crawlPage(currentHandle: String?, executor: ExecutorService?, wait: WebDriverWait) {
+    private fun crawlPage(executor: ExecutorService?, wait: WebDriverWait) {
         webDriver.findElements(By.cssSelector("span.item-info-bottom-down")).forEach {
             CompletableFuture.runAsync(Runnable {
-
-                dismissOtherWindow(currentHandle)
 
                 wait.until(ExpectedConditions.elementToBeClickable(it))
                 println(it.text)
