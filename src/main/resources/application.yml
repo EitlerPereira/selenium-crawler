@@ -2,5 +2,5 @@
 selenium:
   driver:
     name: webdriver.chrome.driver
-    path: src/main/resources/chromedriver/chromedriver.exe
+    path: src/main/resources/webdriver/chromedriver.exe
     download-path: E:/chromedownloads/
