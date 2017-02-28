@@ -1,6 +1,11 @@
 # chrome web driver config
+#  firefox 驱动在 selenium-firefox-webdriver jar 包里面自带了，无需手动配置，其它浏览器都要配置
 selenium:
   driver:
-    name: webdriver.chrome.driver
-    path: src/main/resources/webdriver/chromedriver.exe
-    download-path: E:/chromedownloads/
+    chrome:
+      name: webdriver.chrome.driver
+      path: src/main/resources/webdriver/chromedriver.exe
+      download-path: E:/chromedownloads/
+    edge:
+      name: webdriver.edge.driver
+      path: src/main/resources/webdriver/edgeWebDriver.exe

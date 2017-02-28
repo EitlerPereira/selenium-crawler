@@ -18,13 +18,13 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class ChromeDriverConfig {
 
-    @Value("\${selenium.driver.name}")
+    @Value("\${selenium.driver.chrome.name}")
     private lateinit var driverName : String
 
-    @Value("\${selenium.driver.path}")
+    @Value("\${selenium.driver.chrome.path}")
     private lateinit var driverPath: String
 
-    @Value("\${selenium.driver.download-path}")
+    @Value("\${selenium.driver.chrome.download-path}")
     lateinit var downloadPath:String
 
     @Bean
